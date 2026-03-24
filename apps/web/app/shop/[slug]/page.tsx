@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useCartStore } from "@/stores/cartStore";
 
 const product = {
   id: "1",
@@ -40,6 +41,10 @@ export default function ProductPage({
   const [selectedColor, setSelectedColor] = useState("Black");
   const [selectedSize, setSelectedSize] = useState("Medium");
   const [quantity, setQuantity] = useState(1);
+  const [addedToCart, setAddedToCart] = useState(false);
+
+  const addItem = useCartStore((state) => state.addItem);
+  const openCart = useCartStore((state) => state.openCart);
 
   const colors = [...new Set(product.variants.map((v) => v.color))];
   const sizes = [...new Set(product.variants.map((v) => v.size))];
@@ -49,6 +54,25 @@ export default function ProductPage({
   );
 
   const inStock = selectedVariant && selectedVariant.stock > 0;
+
+  const handleAddToCart = () => {
+    if (!inStock) return;
+
+    const cartItemId = `${product.id}-${selectedColor}-${selectedSize}`;
+
+    addItem({
+      id: cartItemId,
+      productId: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.images[0],
+      color: selectedColor,
+      size: selectedSize,
+    });
+
+    setAddedToCart(true);
+    setTimeout(() => setAddedToCart(false), 2000);
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -206,16 +230,39 @@ export default function ProductPage({
           </div>
 
           {/* Add to Cart */}
-          <button
-            disabled={!inStock}
-            className={`w-full py-4 rounded-lg font-semibold text-lg ${
-              inStock
-                ? "bg-gray-900 text-white hover:bg-gray-800"
-                : "bg-gray-300 text-gray-500 cursor-not-allowed"
-            }`}
-          >
-            {inStock ? "Add to Cart" : "Out of Stock"}
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={handleAddToCart}
+              disabled={!inStock}
+              className={`flex-1 py-4 rounded-lg font-semibold text-lg ${
+                inStock
+                  ? addedToCart
+                    ? "bg-green-600 text-white"
+                    : "bg-gray-900 text-white hover:bg-gray-800"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              }`}
+            >
+              {addedToCart ? "✓ Added to Cart" : inStock ? "Add to Cart" : "Out of Stock"}
+            </button>
+            <button
+              onClick={openCart}
+              className="px-6 py-4 border border-gray-900 rounded-lg hover:bg-gray-50"
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                />
+              </svg>
+            </button>
+          </div>
 
           {/* Additional Info */}
           <div className="mt-8 pt-8 border-t">
