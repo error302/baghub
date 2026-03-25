@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useCartStore } from "@/stores/cartStore";
+import ProductReviews from "@/components/ProductReviews";
 
 const product = {
   id: "1",
@@ -288,15 +289,12 @@ export default function ProductPage({
         </div>
       </div>
 
-      {/* Reviews Section Placeholder */}
-      <section className="mt-16">
-        <h2 className="text-2xl font-bold mb-8">Customer Reviews</h2>
-        <div className="bg-gray-50 rounded-lg p-8 text-center">
-          <p className="text-gray-600">
-            Customer reviews will be displayed here.
-          </p>
-        </div>
-      </section>
+      {/* Reviews Section */}
+      <ProductReviews
+        productId={product.id}
+        averageRating={product.reviews.average}
+        totalReviews={product.reviews.count}
+      />
     </div>
   );
 }

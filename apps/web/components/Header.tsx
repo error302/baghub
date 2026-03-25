@@ -7,6 +7,7 @@ import SearchModal from "@/components/SearchModal";
 
 export default function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { getItemCount, openCart } = useCartStore();
   const itemCount = getItemCount();
 
@@ -14,10 +15,48 @@ export default function Header() {
     <>
       <header className="border-b sticky top-0 bg-white z-30">
         <nav className="container mx-auto px-4 py-4 flex items-center justify-between">
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="md:hidden p-2 hover:bg-gray-100 rounded-lg"
+          >
+            {isMobileMenuOpen ? (
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            ) : (
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+            )}
+          </button>
+
+          {/* Logo */}
           <Link href="/" className="text-2xl font-bold">
             BagHub
           </Link>
 
+          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-6">
             <Link href="/shop" className="hover:text-gray-600">
               Shop
@@ -33,7 +72,8 @@ export default function Header() {
             </Link>
           </div>
 
-          <div className="flex items-center gap-4">
+          {/* Icons */}
+          <div className="flex items-center gap-2">
             {/* Search */}
             <button
               onClick={() => setIsSearchOpen(true)}
@@ -54,8 +94,11 @@ export default function Header() {
               </svg>
             </button>
 
-            {/* Account */}
-            <Link href="/account" className="p-2 hover:bg-gray-100 rounded-lg">
+            {/* Account - Hidden on mobile */}
+            <Link
+              href="/account"
+              className="hidden sm:block p-2 hover:bg-gray-100 rounded-lg"
+            >
               <svg
                 className="w-5 h-5"
                 fill="none"
@@ -71,8 +114,11 @@ export default function Header() {
               </svg>
             </Link>
 
-            {/* Wishlist */}
-            <Link href="/wishlist" className="p-2 hover:bg-gray-100 rounded-lg">
+            {/* Wishlist - Hidden on mobile */}
+            <Link
+              href="/wishlist"
+              className="hidden sm:block p-2 hover:bg-gray-100 rounded-lg"
+            >
               <svg
                 className="w-5 h-5"
                 fill="none"
@@ -114,6 +160,88 @@ export default function Header() {
             </button>
           </div>
         </nav>
+
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden border-t bg-white">
+            <nav className="container mx-auto px-4 py-4 space-y-4">
+              <Link
+                href="/shop"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block py-2 hover:text-gray-600"
+              >
+                Shop All
+              </Link>
+              <Link
+                href="/shop?category=handbags"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block py-2 hover:text-gray-600"
+              >
+                Handbags
+              </Link>
+              <Link
+                href="/shop?category=backpacks"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block py-2 hover:text-gray-600"
+              >
+                Backpacks
+              </Link>
+              <Link
+                href="/shop?category=totes"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block py-2 hover:text-gray-600"
+              >
+                Totes
+              </Link>
+              <Link
+                href="/shop?category=wallets"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block py-2 hover:text-gray-600"
+              >
+                Wallets
+              </Link>
+              <div className="border-t pt-4 mt-4">
+                <Link
+                  href="/account"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block py-2 hover:text-gray-600"
+                >
+                  My Account
+                </Link>
+                <Link
+                  href="/wishlist"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block py-2 hover:text-gray-600"
+                >
+                  Wishlist
+                </Link>
+                <Link
+                  href="/account/orders"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block py-2 hover:text-gray-600"
+                >
+                  Order History
+                </Link>
+              </div>
+              <div className="border-t pt-4 mt-4">
+                <Link
+                  href="/contact"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block py-2 hover:text-gray-600"
+                >
+                  Contact Us
+                </Link>
+                <Link
+                  href="/faq"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block py-2 hover:text-gray-600"
+                >
+                  FAQ
+                </Link>
+              </div>
+            </nav>
+          </div>
+        )}
       </header>
 
       <SearchModal
