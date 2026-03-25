@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import Link from "next/link";
 import AuthProvider from "@/components/AuthProvider";
+import Header from "@/components/Header";
 import CartDrawer from "@/components/CartDrawer";
 import "./globals.css";
 
@@ -21,24 +21,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <AuthProvider>
-          <header className="border-b">
-            <nav className="container mx-auto px-4 py-4 flex items-center justify-between">
-              <Link href="/" className="text-2xl font-bold">
-                BagHub
-              </Link>
-              <div className="flex items-center gap-6">
-                <Link href="/shop" className="hover:text-gray-600">
-                  Shop
-                </Link>
-                <Link href="/cart" className="hover:text-gray-600">
-                  Cart
-                </Link>
-                <Link href="/account" className="hover:text-gray-600">
-                  Account
-                </Link>
-              </div>
-            </nav>
-          </header>
+          <Header />
           <main>{children}</main>
           <CartDrawer />
           <footer className="border-t mt-16 py-8">
