@@ -1,53 +1,50 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Cormorant_Garamond, Jost } from "next/font/google";
 import AuthProvider from "@/components/AuthProvider";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import AnnouncementBar from "@/components/AnnouncementBar";
 import CartDrawer from "@/components/CartDrawer";
+import SearchModal from "@/components/SearchModal";
 import CookieConsent from "@/components/CookieConsent";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-cormorant",
+  display: "swap",
+});
+
+const jost = Jost({
+  subsets: ["latin"],
+  weight: ["200", "300", "400", "500", "600", "700"],
+  variable: "--font-jost",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: {
-    default: "BagHub - Premium Handbags & Bags",
-    template: "%s | BagHub",
+    default: "Maison Élise | Luxury Fashion Boutique",
+    template: "%s | Maison Élise",
   },
   description:
-    "Your destination for curated, premium bags online. Shop handbags, backpacks, totes, wallets, and luggage from top brands.",
+    "Discover timeless elegance at Maison Élise. Curated luxury fashion, handbags, shoes, and accessories. Free worldwide shipping on orders over $500.",
   keywords: [
+    "luxury fashion",
+    "designer clothing",
     "handbags",
-    "backpacks",
-    "totes",
-    "wallets",
-    "luggage",
-    "bags",
-    "designer bags",
-    "luxury bags",
+    "shoes",
+    "accessories",
+    "Maison Élise",
+    "boutique",
+    "haute couture",
+    "premium fashion",
+    "elegant style",
   ],
-  openGraph: {
-    type: "website",
-    locale: "en_US",
-    siteName: "BagHub",
-    title: "BagHub - Premium Handbags & Bags",
-    description:
-      "Your destination for curated, premium bags online. Shop handbags, backpacks, totes, wallets, and luggage from top brands.",
-    images: [
-      {
-        url: "/images/og-image.jpg",
-        width: 1200,
-        height: 630,
-        alt: "BagHub - Premium Handbags & Bags",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "BagHub - Premium Handbags & Bags",
-    description:
-      "Your destination for curated, premium bags online. Shop handbags, backpacks, totes, wallets, and luggage from top brands.",
-    images: ["/images/og-image.jpg"],
-  },
+  authors: [{ name: "Maison Élise" }],
+  creator: "Maison Élise",
+  publisher: "Maison Élise",
   robots: {
     index: true,
     follow: true,
@@ -59,26 +56,57 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://maisonelise.com",
+    siteName: "Maison Élise",
+    title: "Maison Élise | Luxury Fashion Boutique",
+    description:
+      "Discover timeless elegance at Maison Élise. Curated luxury fashion, handbags, shoes, and accessories.",
+    images: [
+      {
+        url: "/images/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Maison Élise - Luxury Fashion Boutique",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Maison Élise | Luxury Fashion Boutique",
+    description:
+      "Discover timeless elegance at Maison Élise. Curated luxury fashion, handbags, shoes, and accessories.",
+    images: ["/images/og-image.jpg"],
+    creator: "@maisonelise",
+  },
+  alternates: {
+    canonical: "https://maisonelise.com",
+  },
+  category: "fashion",
 };
 
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
-  name: "BagHub",
-  url: "https://baghub.com",
-  logo: "https://baghub.com/images/logo.png",
-  description: "Premium handbags & bags e-commerce platform",
+  name: "Maison Élise",
+  url: "https://maisonelise.com",
+  logo: "https://maisonelise.com/images/logo.png",
+  description: "Luxury fashion boutique offering curated designer clothing, handbags, shoes, and accessories.",
+  sameAs: [
+    "https://facebook.com/maisonelise",
+    "https://instagram.com/maisonelise",
+    "https://pinterest.com/maisonelise",
+    "https://tiktok.com/@maisonelise",
+  ],
   contactPoint: {
     "@type": "ContactPoint",
-    telephone: "+1-800-BAGHUB",
+    telephone: "+1-800-MAISON-ELISE",
     contactType: "customer service",
-    availableLanguage: ["English"],
+    availableLanguage: ["English", "French"],
+    areaServed: "Worldwide",
   },
-  sameAs: [
-    "https://facebook.com/baghub",
-    "https://twitter.com/baghub",
-    "https://instagram.com/baghub",
-  ],
 };
 
 export default function RootLayout({
@@ -87,7 +115,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${cormorant.variable} ${jost.variable}`}>
       <head>
         <script
           type="application/ld+json"
@@ -95,98 +123,92 @@ export default function RootLayout({
             __html: JSON.stringify(organizationSchema),
           }}
         />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              // Custom cursor implementation
+              (function() {
+                // Check if touch device
+                const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
+                if (isTouchDevice) return;
+                
+                // Create cursor elements
+                const dot = document.createElement('div');
+                dot.className = 'cursor-dot';
+                const ring = document.createElement('div');
+                ring.className = 'cursor-ring';
+                
+                document.body.appendChild(dot);
+                document.body.appendChild(ring);
+                
+                let mouseX = 0;
+                let mouseY = 0;
+                let ringX = 0;
+                let ringY = 0;
+                
+                // Track mouse position
+                document.addEventListener('mousemove', (e) => {
+                  mouseX = e.clientX;
+                  mouseY = e.clientY;
+                  dot.style.left = mouseX + 'px';
+                  dot.style.top = mouseY + 'px';
+                }, { passive: true });
+                
+                // Smooth ring animation
+                function animateRing() {
+                  ringX += (mouseX - ringX) * 0.15;
+                  ringY += (mouseY - ringY) * 0.15;
+                  ring.style.left = ringX + 'px';
+                  ring.style.top = ringY + 'px';
+                  requestAnimationFrame(animateRing);
+                }
+                animateRing();
+                
+                // Add hover effect to interactive elements
+                const interactiveElements = document.querySelectorAll('a, button, [role="button"], input, textarea, select, [tabindex]:not([tabindex="-1"])');
+                interactiveElements.forEach(el => {
+                  el.addEventListener('mouseenter', () => {
+                    dot.classList.add('hover');
+                    ring.classList.add('hover');
+                  });
+                  el.addEventListener('mouseleave', () => {
+                    dot.classList.remove('hover');
+                    ring.classList.remove('hover');
+                  });
+                });
+                
+                // Handle dynamic content
+                const observer = new MutationObserver(() => {
+                  const newElements = document.querySelectorAll('a, button, [role="button"], input, textarea, select, [tabindex]:not([tabindex="-1"])');
+                  newElements.forEach(el => {
+                    if (!el.dataset.cursorBound) {
+                      el.dataset.cursorBound = 'true';
+                      el.addEventListener('mouseenter', () => {
+                        dot.classList.add('hover');
+                        ring.classList.add('hover');
+                      });
+                      el.addEventListener('mouseleave', () => {
+                        dot.classList.remove('hover');
+                        ring.classList.remove('hover');
+                      });
+                    }
+                  });
+                });
+                observer.observe(document.body, { childList: true, subtree: true });
+              })();
+            `,
+          }}
+        />
       </head>
-      <body className={inter.className}>
+      <body className="bg-ivory text-charcoal antialiased">
         <AuthProvider>
+          <AnnouncementBar />
           <Header />
           <main>{children}</main>
+          <Footer />
           <CartDrawer />
+          <SearchModal />
           <CookieConsent />
-          <footer className="border-t mt-16 py-8">
-            <div className="container mx-auto px-4">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-                <div>
-                  <h3 className="font-bold text-lg mb-4">BagHub</h3>
-                  <p className="text-gray-600 text-sm">
-                    Your destination for curated, premium bags online.
-                  </p>
-                </div>
-                <div>
-                  <h4 className="font-semibold mb-4">Shop</h4>
-                  <ul className="space-y-2 text-sm text-gray-600">
-                    <li>
-                      <a href="/shop?category=handbags" className="hover:text-gray-900">
-                        Handbags
-                      </a>
-                    </li>
-                    <li>
-                      <a href="/shop?category=backpacks" className="hover:text-gray-900">
-                        Backpacks
-                      </a>
-                    </li>
-                    <li>
-                      <a href="/shop?category=totes" className="hover:text-gray-900">
-                        Totes
-                      </a>
-                    </li>
-                    <li>
-                      <a href="/shop?category=wallets" className="hover:text-gray-900">
-                        Wallets
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                <div>
-                  <h4 className="font-semibold mb-4">Support</h4>
-                  <ul className="space-y-2 text-sm text-gray-600">
-                    <li>
-                      <a href="/contact" className="hover:text-gray-900">
-                        Contact Us
-                      </a>
-                    </li>
-                    <li>
-                      <a href="/faq" className="hover:text-gray-900">
-                        FAQ
-                      </a>
-                    </li>
-                    <li>
-                      <a href="/shipping" className="hover:text-gray-900">
-                        Shipping Info
-                      </a>
-                    </li>
-                    <li>
-                      <a href="/returns" className="hover:text-gray-900">
-                        Returns
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                <div>
-                  <h4 className="font-semibold mb-4">Legal</h4>
-                  <ul className="space-y-2 text-sm text-gray-600">
-                    <li>
-                      <a href="/privacy" className="hover:text-gray-900">
-                        Privacy Policy
-                      </a>
-                    </li>
-                    <li>
-                      <a href="/terms" className="hover:text-gray-900">
-                        Terms of Service
-                      </a>
-                    </li>
-                    <li>
-                      <a href="/cookies" className="hover:text-gray-900">
-                        Cookie Policy
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-              <div className="border-t pt-8 text-center text-gray-600 text-sm">
-                <p>&copy; 2025 BagHub. All rights reserved.</p>
-              </div>
-            </div>
-          </footer>
         </AuthProvider>
       </body>
     </html>

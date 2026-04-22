@@ -1,15 +1,41 @@
 {
-  "name": "baghub",
+  "name": "maison-elise",
   "private": true,
+  "version": "2.0.0",
+  "description": "Maison Élise - Luxury Boutique E-commerce Platform",
   "scripts": {
-    "dev": "pnpm --filter web dev",
-    "build": "pnpm --filter web build",
-    "lint": "pnpm --filter web lint",
+    "dev": "pnpm run --parallel dev",
+    "dev:web": "pnpm --filter web dev",
+    "dev:api": "pnpm --filter api dev",
+    "dev:admin": "pnpm --filter admin dev",
+    "build": "pnpm run --filter api --filter web build",
+    "build:web": "pnpm --filter web build",
+    "build:api": "pnpm --filter api build",
+    "build:admin": "pnpm --filter admin build",
+    "lint": "pnpm run --filter web --filter api --filter admin lint",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
-    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,md}\""
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
+    "db:generate": "prisma generate --schema=packages/db/prisma/schema.prisma",
+    "db:migrate": "prisma migrate dev --schema=packages/db/prisma/schema.prisma",
+    "db:studio": "prisma studio --schema=packages/db/prisma/schema.prisma",
+    "db:seed": "tsx packages/db/prisma/seed.ts",
+    "db:push": "prisma db push --schema=packages/db/prisma/schema.prisma",
+    "clean": "rm -rf apps/*/node_modules apps/*/.next apps/*/dist node_modules",
+    "test": "echo \"Run tests with: pnpm --filter <app> test\""
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.5",
-    "eslint": "^10.1.0"
+    "eslint": "^10.1.0",
+    "prettier": "^3.2.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.0"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
   }
 }

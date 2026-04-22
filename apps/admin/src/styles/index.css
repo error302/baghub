@@ -1,0 +1,251 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Maison Élise Color System */
+  --ivory: #F7F4EF;
+  --cream: #EDE9E1;
+  --gold: #B8965A;
+  --gold-light: #D4AC6E;
+  --gold-dark: #9A7B4A;
+  --charcoal: #1C1C1C;
+  --slate: #3D3D3D;
+  --muted: #8A8278;
+  --white: #FEFEFE;
+  
+  /* Semantic Colors */
+  --bg-primary: var(--ivory);
+  --bg-secondary: var(--cream);
+  --bg-tertiary: var(--white);
+  --text-primary: var(--charcoal);
+  --text-secondary: var(--slate);
+  --text-muted: var(--muted);
+  --accent-primary: var(--gold);
+  --accent-light: var(--gold-light);
+  --border-subtle: rgba(28, 28, 28, 0.08);
+  --border-default: rgba(28, 28, 28, 0.12);
+  
+  /* Status Colors */
+  --status-success: #2D5A3D;
+  --status-success-bg: rgba(45, 90, 61, 0.08);
+  --status-warning: #B8860B;
+  --status-warning-bg: rgba(184, 134, 11, 0.08);
+  --status-error: #8B2635;
+  --status-error-bg: rgba(139, 38, 53, 0.08);
+  --status-info: #4A6FA5;
+  --status-info-bg: rgba(74, 111, 165, 0.08);
+  
+  /* Typography */
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-sans: 'Jost', system-ui, sans-serif;
+  
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4rem;
+  
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-base: 300ms ease;
+  --transition-slow: 500ms ease;
+  
+  /* Shadows */
+  --shadow-soft: 0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04);
+  --shadow-elegant: 0 4px 20px -2px rgba(28, 28, 28, 0.12);
+}
+
+@layer base {
+  * {
+    @apply border-border-subtle;
+  }
+  
+  html {
+    @apply antialiased;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  
+  body {
+    @apply bg-ivory text-charcoal font-sans;
+    font-feature-settings: "kern" 1, "liga" 1;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif font-medium tracking-tight;
+  }
+  
+  h1 {
+    @apply text-display;
+  }
+  
+  h2 {
+    @apply text-title;
+  }
+  
+  h3 {
+    @apply text-2xl;
+  }
+  
+  ::selection {
+    @apply bg-gold/20 text-charcoal;
+  }
+  
+  /* Scrollbar Styling */
+  ::-webkit-scrollbar {
+    @apply w-2 h-2;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-cream;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-muted/30 rounded-full;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted/50;
+  }
+}
+
+@layer components {
+  /* Button Styles */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium transition-all duration-luxury;
+  }
+  
+  .btn-primary {
+    @apply btn bg-charcoal text-white hover:bg-slate;
+  }
+  
+  .btn-secondary {
+    @apply btn bg-cream text-charcoal hover:bg-gold/10 border border-border-default;
+  }
+  
+  .btn-ghost {
+    @apply btn text-charcoal hover:bg-cream;
+  }
+  
+  .btn-gold {
+    @apply btn bg-gold text-white hover:bg-gold-dark;
+  }
+  
+  /* Form Styles */
+  .form-input {
+    @apply w-full px-4 py-2.5 bg-white border border-border-default text-charcoal text-sm
+           placeholder:text-muted/60 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold/20
+           transition-all duration-luxury;
+  }
+  
+  .form-label {
+    @apply block text-sm font-medium text-charcoal mb-1.5;
+  }
+  
+  .form-group {
+    @apply mb-5;
+  }
+  
+  /* Card Styles */
+  .card {
+    @apply bg-white shadow-soft;
+  }
+  
+  .card-elegant {
+    @apply bg-white shadow-elegant;
+  }
+  
+  /* Table Styles */
+  .table-luxury {
+    @apply w-full text-left border-collapse;
+  }
+  
+  .table-luxury th {
+    @apply py-3 px-4 text-xs font-semibold uppercase tracking-wider text-muted bg-cream border-b border-border-default;
+  }
+  
+  .table-luxury td {
+    @apply py-4 px-4 text-sm border-b border-border-subtle;
+  }
+  
+  .table-luxury tbody tr {
+    @apply transition-colors duration-luxury hover:bg-cream/30;
+  }
+  
+  /* Navigation Link */
+  .nav-link {
+    @apply flex items-center gap-3 px-4 py-3 text-sm text-muted transition-all duration-luxury
+           hover:text-charcoal hover:bg-cream/50;
+  }
+  
+  .nav-link.active {
+    @apply text-gold bg-gold/5 border-r-2 border-gold;
+  }
+  
+  /* Badge Styles */
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 text-xs font-medium rounded-full;
+  }
+  
+  /* Page Header */
+  .page-header {
+    @apply mb-8;
+  }
+  
+  .page-title {
+    @apply font-serif text-3xl font-semibold text-charcoal;
+  }
+  
+  .page-subtitle {
+    @apply mt-1 text-muted text-sm;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .animate-fade-in {
+    animation: fadeIn 300ms ease forwards;
+  }
+  
+  .animate-slide-in {
+    animation: slideIn 300ms ease forwards;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Focus styles */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-gold/30 focus:ring-offset-2 focus:ring-offset-ivory;
+  }
+  
+  /* Luxury border */
+  .border-luxury {
+    @apply border border-border-default;
+  }
+}

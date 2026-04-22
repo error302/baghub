@@ -1,193 +1,232 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import Image from "next/image";
+import { Search, X, ArrowRight, TrendingUp } from "lucide-react";
 
-const products = [
-  {
-    id: "1",
-    name: "Classic Leather Tote",
-    slug: "classic-leather-tote",
-    price: 299.99,
-    category: "Totes",
-  },
-  {
-    id: "2",
-    name: "Designer Handbag",
-    slug: "designer-handbag",
-    price: 499.99,
-    category: "Handbags",
-  },
-  {
-    id: "3",
-    name: "Travel Backpack",
-    slug: "travel-backpack",
-    price: 189.99,
-    category: "Backpacks",
-  },
-  {
-    id: "4",
-    name: "Slim Wallet",
-    slug: "slim-wallet",
-    price: 79.99,
-    category: "Wallets",
-  },
-  {
-    id: "5",
-    name: "Weekend Duffel",
-    slug: "weekend-duffel",
-    price: 159.99,
-    category: "Luggage",
-  },
-  {
-    id: "6",
-    name: "Crossbody Bag",
-    slug: "crossbody-bag",
-    price: 129.99,
-    category: "Handbags",
-  },
-  {
-    id: "7",
-    name: "Kids Backpack",
-    slug: "kids-backpack",
-    price: 49.99,
-    category: "Kids",
-  },
-  {
-    id: "8",
-    name: "Canvas Tote",
-    slug: "canvas-tote",
-    price: 89.99,
-    category: "Totes",
-  },
-];
+interface SearchResult {
+  id: string;
+  name: string;
+  slug: string;
+  price: number;
+  image: string;
+  category: string;
+}
 
-export default function SearchModal({
-  isOpen,
-  onClose,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-}) {
+export default function SearchModal({ onClose }: { onClose?: () => void }) {
   const [query, setQuery] = useState("");
+  const [results, setResults] = useState<SearchResult[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [recentSearches] = useState([
+    "Evening Dresses",
+    "Leather Handbags",
+    "Designer Heels",
+    "Silk Scarves",
+  ]);
 
-  const results = query
-    ? products.filter(
-        (p) =>
-          p.name.toLowerCase().includes(query.toLowerCase()) ||
-          p.category.toLowerCase().includes(query.toLowerCase())
-      )
-    : [];
+  const searchProducts = useCallback(async (searchQuery: string) => {
+    if (!searchQuery.trim()) {
+      setResults([]);
+      return;
+    }
 
-  if (!isOpen) return null;
+    setIsLoading(true);
+    try {
+      const response = await fetch(
+        `/api/products?search=${encodeURIComponent(searchQuery)}`
+      );
+      const data = await response.json();
+      setResults(data.products?.slice(0, 6) || []);
+    } catch (error) {
+      console.error("Search error:", error);
+      setResults([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      searchProducts(query);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [query, searchProducts]);
+
+  // Close on escape key
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && onClose) {
+        onClose();
+      }
+    };
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [onClose]);
+
+  // Lock body scroll
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, []);
+
+  const handleClose = () => {
+    if (onClose) onClose();
+  };
 
   return (
-    <>
-      {/* Overlay */}
-      <div className="fixed inset-0 bg-black/50 z-40" onClick={onClose} />
+    <div className="fixed inset-0 z-50">
+      {/* Backdrop */}
+      <div
+        className="absolute inset-0 bg-charcoal/90 backdrop-blur-md animate-fade-in"
+        onClick={handleClose}
+      />
 
-      {/* Search Modal */}
-      <div className="fixed inset-x-0 top-0 z-50 p-4">
-        <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-xl">
+      {/* Modal Content */}
+      <div className="absolute inset-x-0 top-0 bg-ivory min-h-[60vh] max-h-[90vh] overflow-auto animate-fade-slide-down">
+        <div className="container-luxury py-8">
           {/* Search Input */}
-          <div className="flex items-center gap-3 p-4 border-b">
-            <svg
-              className="w-5 h-5 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
+          <div className="flex items-center gap-4 pb-6 border-b border-sand">
+            <Search className="w-6 h-6 text-gold" />
             <input
               type="text"
+              placeholder="Search for products, categories, or styles..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search products..."
-              className="flex-1 outline-none text-lg"
+              className="flex-1 text-2xl md:text-3xl font-serif font-light bg-transparent outline-none placeholder:text-muted"
               autoFocus
             />
             <button
-              onClick={onClose}
-              className="p-2 hover:bg-gray-100 rounded-lg"
+              onClick={handleClose}
+              className="p-2 hover:text-gold transition-colors"
+              aria-label="Close search"
             >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
+              <X className="w-6 h-6" />
             </button>
           </div>
 
-          {/* Results */}
-          <div className="max-h-96 overflow-y-auto">
-            {query && results.length === 0 ? (
-              <div className="p-8 text-center text-gray-500">
-                No products found for "{query}"
-              </div>
-            ) : results.length > 0 ? (
-              <div className="p-2">
-                {results.map((product) => (
+          {/* Content */}
+          <div className="py-8">
+            {query ? (
+              // Search Results
+              <div>
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-caption text-muted">
+                    {isLoading ? "Searching..." : `${results.length} results found`}
+                  </h3>
                   <Link
-                    key={product.id}
-                    href={`/shop/${product.slug}`}
-                    onClick={onClose}
-                    className="flex items-center gap-4 p-3 rounded-lg hover:bg-gray-50"
+                    href={`/shop?search=${encodeURIComponent(query)}`}
+                    onClick={handleClose}
+                    className="text-sm text-gold hover:text-gold-light transition-colors flex items-center gap-1"
                   >
-                    <div className="w-12 h-12 bg-gray-200 rounded">
-                      <div className="w-full h-full bg-gray-300 rounded" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-medium">{product.name}</p>
-                      <p className="text-sm text-gray-500">
-                        {product.category}
-                      </p>
-                    </div>
-                    <p className="font-semibold">
-                      ${product.price.toFixed(2)}
-                    </p>
+                    View All
+                    <ArrowRight className="w-4 h-4" />
                   </Link>
-                ))}
+                </div>
+
+                {isLoading ? (
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+                    {[...Array(6)].map((_, i) => (
+                      <div key={i} className="space-y-3">
+                        <div className="aspect-[3/4] bg-cream animate-shimmer" />
+                        <div className="h-4 bg-cream w-3/4 animate-shimmer" />
+                        <div className="h-4 bg-cream w-1/2 animate-shimmer" />
+                      </div>
+                    ))}
+                  </div>
+                ) : results.length > 0 ? (
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+                    {results.map((product) => (
+                      <Link
+                        key={product.id}
+                        href={`/shop/${product.slug}`}
+                        onClick={handleClose}
+                        className="group"
+                      >
+                        <div className="relative aspect-[3/4] bg-cream mb-3 overflow-hidden">
+                          <Image
+                            src={product.image || "/placeholder-product.jpg"}
+                            alt={product.name}
+                            fill
+                            className="object-cover transition-transform duration-500 group-hover:scale-105"
+                          />
+                        </div>
+                        <p className="text-caption text-muted">{product.category}</p>
+                        <h4 className="font-sans text-sm font-medium group-hover:text-gold transition-colors line-clamp-1">
+                          {product.name}
+                        </h4>
+                        <p className="font-serif text-base mt-1">
+                          ${product.price.toLocaleString()}
+                        </p>
+                      </Link>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12">
+                    <p className="text-muted mb-4">
+                      No results found for &quot;{query}&quot;
+                    </p>
+                    <p className="text-sm text-muted">
+                      Try checking your spelling or browse our categories
+                    </p>
+                  </div>
+                )}
               </div>
             ) : (
-              <div className="p-8 text-center text-gray-500">
-                Start typing to search products
+              // Default View
+              <div className="grid md:grid-cols-2 gap-12">
+                {/* Recent Searches */}
+                <div>
+                  <h3 className="text-caption text-muted mb-6 flex items-center gap-2">
+                    <TrendingUp className="w-4 h-4" />
+                    Trending Searches
+                  </h3>
+                  <div className="flex flex-wrap gap-3">
+                    {recentSearches.map((term) => (
+                      <button
+                        key={term}
+                        onClick={() => setQuery(term)}
+                        className="px-4 py-2 bg-cream text-sm hover:bg-sand transition-colors"
+                      >
+                        {term}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Popular Categories */}
+                <div>
+                  <h3 className="text-caption text-muted mb-6">Popular Categories</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    {[
+                      { name: "Clothing", count: 120 },
+                      { name: "Handbags", count: 45 },
+                      { name: "Shoes", count: 78 },
+                      { name: "Accessories", count: 56 },
+                    ].map((category) => (
+                      <Link
+                        key={category.name}
+                        href={`/shop?category=${category.name.toLowerCase()}`}
+                        onClick={handleClose}
+                        className="p-4 bg-cream hover:bg-sand transition-colors group"
+                      >
+                        <span className="block font-sans font-medium group-hover:text-gold transition-colors">
+                          {category.name}
+                        </span>
+                        <span className="text-sm text-muted">
+                          {category.count} items
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
               </div>
             )}
           </div>
-
-          {/* Quick Links */}
-          {!query && (
-            <div className="p-4 border-t">
-              <p className="text-sm text-gray-500 mb-2">Popular searches</p>
-              <div className="flex flex-wrap gap-2">
-                {["Totes", "Handbags", "Backpacks", "Wallets"].map((term) => (
-                  <button
-                    key={term}
-                    onClick={() => setQuery(term)}
-                    className="px-3 py-1 bg-gray-100 rounded-full text-sm hover:bg-gray-200"
-                  >
-                    {term}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       </div>
-    </>
+    </div>
   );
 }
